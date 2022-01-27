@@ -7,10 +7,10 @@ client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = client["kenzie"]
 
 class Post:
-    def __init__(self,id,title, author, tags:list, content):
-        self.id = id
+    def __init__(self,title, author, tags:list, content):
+        self.id = len(list((db.posts.find())))
         self.created_at = datetime.now()
-        self.update_at = datetime.now()
+        self.update_at = ''
         self.title = title
         self.author = author
         self.tags = tags
@@ -23,10 +23,6 @@ class Post:
     
     def post_posts(self):
        return db.posts.insert_one(self.__dict__)
-    
-    def generate_date(post):
-        return post._id.generation_time
-        
 
     @staticmethod
     def del_post(id):
@@ -37,9 +33,10 @@ class Post:
     def get_one(id):
        current_one =  db.posts.find_one({"id":id})
        return current_one
-
+    
     @staticmethod
-    def get_update(self, id):
-        new_information = request.get_json() 
+    def get_update(id):
+        new_information = request.get_json()
+        new_information["update_at"] = datetime.now() 
         return db.posts.find_one_and_update({"id":id}, {"$set": new_information},  return_document=True)
     
